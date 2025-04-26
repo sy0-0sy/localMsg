@@ -37,10 +37,15 @@ public class LocalMessageService implements ApplicationContextAware {
         save(localMessagePO);
         boolean isInTx = TransactionSynchronizationManager.isActualTransactionActive();
         if (isInTx) {
-            //TODO 在事务中,等待事务提交后, 回调触发被切方法 Why?
+            //TODO 在事务中,等待事务提交后, 回调触发被切方法 Why? ↓
+            /**
+             * 落本地消息和主事务是在一个事务中的，
+             * 注册的回调是为了在事务提交之后手动执行一次被切方法
+             * 就不用等到下一次定时任务周期再捞起来执行了
+             */
             TxOps.doAfterTxCompletion(() -> execute(localMessagePO, async));
         } else {
-            //非事务中立即执行
+            //非事务中立即执行,也就是被捞起来执行
             execute(localMessagePO, async);
         }
 
@@ -68,7 +73,7 @@ public class LocalMessageService implements ApplicationContextAware {
         InvokeCtx ctx = JSON.parseObject(snapshot, InvokeCtx.class);
 
         try {
-            InvokeStatusHolder.startInvoke();
+            InvokeStatusHolder.startInvoke();//计数器 判定是不是在切面中, 防止重复走切面
             Object[] parseParam = JSON.parseObject(ctx.getParamTypes(), Object[].class);
             List<Class<?>> parseParamType = getParamType(JSON.parseObject(ctx.getParamTypes(), List.class));
             Class<?> target = Class.forName(ctx.getClassName());

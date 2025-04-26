@@ -38,7 +38,7 @@ public class LocalMsgAspect {
         if(localMessage == null){
             return jp.proceed();
         }
-        // TODO 正在执行
+        //已经在切面中了,就直接执行目标方法 不要再往下走了
         if(InvokeStatusHolder.inInvoke()){
             return jp.proceed();
         }
