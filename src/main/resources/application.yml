@@ -1,0 +1,5 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/local_msg
+    username: root
+    password: sy1224647477
