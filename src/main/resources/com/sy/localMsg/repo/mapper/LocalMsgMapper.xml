@@ -40,7 +40,7 @@
         WHERE id = #{id}
         AND deleted_at = 0
     </update>
-    <select id="loadWaitRetryRecords" resultType="com.sy.localMsg.repo.LocalMessagePO">
+    <select id="loadWaitRetryRecords" resultMap="ConfigResultMap">
         SELECT
         <include refid="result_cols"/>
         FROM local_message

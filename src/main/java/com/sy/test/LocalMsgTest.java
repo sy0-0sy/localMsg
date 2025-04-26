@@ -10,6 +10,9 @@ public class LocalMsgTest {
 
     @LocalMessage(bizCode = "test-sy")
     public void fun(String msg){
+        if(System.currentTimeMillis()%2 != 0){
+            throw new RuntimeException("test error!");
+        }
         log.info("收到消息:{}",msg);
     }
 }

@@ -61,7 +61,7 @@ public class LocalMessageService implements ApplicationContextAware {
     private void doInvoke(LocalMessagePO lmp) {
         String snapshot = lmp.getReqSnapshot();
         if (StrUtil.isBlank(snapshot)) {
-            log.warn("Request snapshot is blank, recordId: {}", lmp.getId());
+            log.error("Request snapshot is blank, recordId: {}", lmp.getId());
             invokeFail(lmp, "Request snapshot is blank");
             return;
         }
@@ -119,6 +119,7 @@ public class LocalMessageService implements ApplicationContextAware {
 
         if(retryTimes >= lmp.getMaxRetryTimes()){
             //最大重试时间已经耗尽
+            updateDO.setRetryTimes(retryTimes);
             updateDO.setStatus(TaskStatus.FAIL.name());
         }else{
             //设置重试时间/状态 等待定时任务调度
@@ -165,7 +166,8 @@ public class LocalMessageService implements ApplicationContextAware {
         this.applicationContext  = applicationContext;
     }
 
-    @Scheduled(initialDelay = Constant.INIT_DELAY_TIME,fixedRate = Constant.RETRY_TASK_INTERVAL)
+    //@Scheduled(initialDelay = Constant.INIT_DELAY_TIME,fixedRate = Constant.RETRY_TASK_INTERVAL)
+    @Scheduled(initialDelay = Constant.INIT_DELAY_TIME,fixedRate = 1000 * 5)
     public void compensation(){
         log.info("本地消息表 定时任务 补偿开始!");
         loadWaitRetryRecords().forEach(this::doInvokeAsync);
