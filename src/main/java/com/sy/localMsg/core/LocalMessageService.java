@@ -37,7 +37,7 @@ public class LocalMessageService implements ApplicationContextAware {
         save(localMessagePO);
         boolean isInTx = TransactionSynchronizationManager.isActualTransactionActive();
         if (isInTx) {
-            //TODO 在事务中,等待事务提交后, 回调触发被切方法 Why? ↓
+            //在主事务中, 不能影响主流程执行, 等待事务提交后, 回调触发被切方法 Why? ↓
             /**
              * 落本地消息和主事务是在一个事务中的，
              * 注册的回调是为了在事务提交之后手动执行一次被切方法

@@ -64,11 +64,6 @@ public class LocalMsgAspect {
         );
         log.info("本地消息表写入记录: {}, 是否异步:{}",JSON.toJSONString(localMessagePO),async);
         localMessageService.invoke(localMessagePO,async);
-//        LocalMessagePO parsePo =  JSON.parseObject(JSON.toJSONString(localMessagePO),LocalMessagePO.class);
-//        InvokeCtx parseCtx = JSON.parseObject(parsePo.getReqSnapshot(), InvokeCtx.class);
-//        Object[] parseParam = JSON.parseObject(parseCtx.getParamTypes(),Object[].class);
-//        List<String> parseParamType = JSON.parseObject(parseCtx.getParamTypes(),List.class);
-
         // 真正执行 不在这了 直接返回null
         return null;
     }
